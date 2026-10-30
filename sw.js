@@ -1,5 +1,5 @@
 /* NatanXvideos go-shell — cache shell only; NEVER cache link.json */
-const CACHE = "nxv-go-shell-v2";
+const CACHE = "nxv-go-shell-v3";
 const SHELL = [
   "/go/",
   "/go/index.html",
@@ -29,16 +29,14 @@ self.addEventListener("fetch", (e) => {
   // Never cache the live tunnel pointer
   if (url.pathname.endsWith("/link.json") || url.pathname === "/go/link.json") return;
   if (!url.pathname.startsWith("/go")) return;
+  // network-first: always the newest page; cache only when offline
   e.respondWith(
-    caches.match(e.request).then((hit) => {
-      if (hit) return hit;
-      return fetch(e.request).then((res) => {
-        if (res.ok && SHELL.includes(url.pathname)) {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(e.request, copy));
-        }
-        return res;
-      }).catch(() => caches.match("/go/index.html"));
-    })
+    fetch(e.request).then((res) => {
+      if (res.ok && SHELL.includes(url.pathname)) {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put(e.request, copy));
+      }
+      return res;
+    }).catch(() => caches.match(e.request).then((hit) => hit || caches.match("/go/index.html")))
   );
 });
