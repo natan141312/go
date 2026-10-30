@@ -1,1 +1,113 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta http-equiv="refresh" content="0;url=https://mxkdi-140-248-50-13.free.pinggy.net"><title>מעביר...</title></head><body><script>location.replace("https://mxkdi-140-248-50-13.free.pinggy.net")</script><a href="https://mxkdi-140-248-50-13.free.pinggy.net">מעביר...</a></body></html>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#0E1018">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NatanXvideos">
+<title>NatanXvideos</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  html,body{margin:0;padding:0;height:100%;background:#0E1018;color:#e8eaf0;font-family:system-ui,-apple-system,sans-serif}
+  #frame{border:0;width:100%;height:100%;display:block;background:#0E1018}
+  #status{display:none;position:fixed;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;text-align:center;background:#0E1018;z-index:2}
+  #status.show{display:flex}
+  #status .dot{width:10px;height:10px;border-radius:50%;background:#7aa2ff;animation:pulse 1.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+  #status p{margin:0;font-size:15px;opacity:.9}
+  #status small{opacity:.55;font-size:12px}
+</style>
+</head>
+<body>
+<div id="status" role="status" aria-live="polite">
+  <div class="dot" aria-hidden="true"></div>
+  <p>מתחבר מחדש…</p>
+  <small>בודק קישור כל 10 שניות</small>
+</div>
+<iframe id="frame" title="NatanXvideos" allow="fullscreen" referrerpolicy="no-referrer"></iframe>
+<script>
+(function () {
+  // FALLBACK_URL updated by keepalive.sh when the tunnel rotates
+  var FALLBACK_URL = "https://mxkdi-140-248-50-13.free.pinggy.net";
+  var frame = document.getElementById("frame");
+  var statusEl = document.getElementById("status");
+  var current = "";
+  var retryTimer = null;
+
+  function showStatus(on) {
+    statusEl.classList.toggle("show", !!on);
+  }
+
+  function loadUrl(url) {
+    if (!url) return;
+    if (url !== current) {
+      current = url;
+      frame.src = url;
+    }
+  }
+
+  function probe(url) {
+    return fetch(url, { method: "GET", mode: "no-cors", cache: "no-store", signal: AbortSignal.timeout(12000) })
+      .then(function () { return true; })
+      .catch(function () { return false; });
+  }
+
+  function fetchLink() {
+    return fetch("link.json?t=" + Date.now(), { cache: "no-store", headers: { "Cache-Control": "no-cache" } })
+      .then(function (r) {
+        if (!r.ok) throw new Error("bad status");
+        return r.json();
+      })
+      .then(function (j) {
+        if (j && typeof j.url === "string" && j.url.indexOf("https://") === 0) return j.url;
+        throw new Error("bad json");
+      });
+  }
+
+  function cycle() {
+    fetchLink()
+      .catch(function () { return FALLBACK_URL; })
+      .then(function (url) {
+        loadUrl(url);
+        return probe(url).then(function (ok) {
+          if (ok) {
+            showStatus(false);
+          } else {
+            showStatus(true);
+          }
+        });
+      })
+      .catch(function () { showStatus(true); })
+      .finally(function () {
+        clearTimeout(retryTimer);
+        retryTimer = setTimeout(cycle, 10000);
+      });
+  }
+
+  frame.addEventListener("load", function () {
+    // opaque cross-origin load still fires; hide reconnect if we have a src
+    if (current) showStatus(false);
+  });
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js", { scope: "/go/" }).catch(function () {});
+  }
+
+  showStatus(true);
+  cycle();
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) cycle();
+  });
+})();
+</script>
+<noscript>
+  <meta http-equiv="refresh" content="0;url=https://mxkdi-140-248-50-13.free.pinggy.net">
+  <p><a href="https://mxkdi-140-248-50-13.free.pinggy.net">כניסה לאתר</a></p>
+</noscript>
+</body>
+</html>
