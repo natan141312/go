@@ -1,5 +1,5 @@
 /* NatanXvideos go-shell — cache shell only; NEVER cache link.json */
-const CACHE = "nxv-go-shell-v1";
+const CACHE = "nxv-go-shell-v2";
 const SHELL = [
   "/go/",
   "/go/index.html",

@@ -29,12 +29,10 @@
   <p>מתחבר מחדש…</p>
   <small>בודק קישור כל 10 שניות</small>
 </div>
-<iframe id="frame" title="NatanXvideos" allow="fullscreen" referrerpolicy="no-referrer"></iframe>
 <script>
 (function () {
   // FALLBACK_URL updated by keepalive.sh when the tunnel rotates
   var FALLBACK_URL = "https://mxkdi-140-248-50-13.free.pinggy.net";
-  var frame = document.getElementById("frame");
   var statusEl = document.getElementById("status");
   var current = "";
   var retryTimer = null;
@@ -45,10 +43,7 @@
 
   function loadUrl(url) {
     if (!url) return;
-    if (url !== current) {
-      current = url;
-      frame.src = url;
-    }
+    current = url;
   }
 
   function probe(url) {
@@ -76,7 +71,8 @@
         loadUrl(url);
         return probe(url).then(function (ok) {
           if (ok) {
-            showStatus(false);
+            location.replace(current);
+            return;
           } else {
             showStatus(true);
           }
@@ -89,10 +85,6 @@
       });
   }
 
-  frame.addEventListener("load", function () {
-    // opaque cross-origin load still fires; hide reconnect if we have a src
-    if (current) showStatus(false);
-  });
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js", { scope: "/go/" }).catch(function () {});
